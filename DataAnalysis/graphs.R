@@ -23,14 +23,16 @@ str(home)
 summary(home)
 table(home$Type, useNA = "always")
 
-#Histograms and Boxplot
 #Information about the data
 sapply(home, table, useNA = "always")
 
-ggplot(home, aes(x=PostalCode)) + geom_histogram(binwidth=5)
+#Log Prices?
 ggplot(home, aes(x=Price)) + geom_histogram(binwidth=1e5)
 ggplot(home, aes(x=log(Price))) + geom_histogram(binwidth=0.05)
 
+
+
+#Analysis - Number of NA? 
 ###########################################################################
 #
 
@@ -71,6 +73,13 @@ grid.arrange(newk, neww, closeto, newb, numbert, numberbed, manyt, garage, reno,
 
 grid.arrange(newk, neww, closeto, newb, numbert, numberbed, manyt, garage, reno, lev, bal, large, high, quart, 
              ncol = 4)
+
+
+
+
+
+
+#Analysis of prices ~ variables
 ###########################################################################
 #Boxplotting
 ggplot(home, aes(as.factor(YearOfSale), Price)) + geom_boxplot()
@@ -105,47 +114,27 @@ high = ggplot(home, aes(x=HighHouse, Price)) + geom_boxplot()
 
 quart = ggplot(home, aes(x=Quarter, Price)) + geom_boxplot()
 
+
 # Get the rest
 postal = ggplot(home, aes(x=PostalCode, Price)) + geom_boxplot()
-type = ggplot(home, aes(x=Type, Price)) + geom_boxplot()
 quart = ggplot(home, aes(x=Quarter, Price)) + geom_boxplot()
 cond = ggplot(home, aes(x=Condition, Price)) + geom_boxplot()
 livingarea = ggplot(home, aes(x=as.factor(LivingArea), Price)) + geom_boxplot()
-#Fortsaet så faar graf med fordelingen af variable ift. pris for alle variable. 
+#Fortsaet saa faar graf med fordelingen af variable ift. pris for alle variable. 
 
 ggplot(home, aes(x=Price, fill = as.factor(SalesPeriod)))  + geom_histogram(bins = 100) + geom_vline(xintercept = mean(home$Price))
 ggplot(home, aes(x=SalesPeriod, y=Price)) + geom_point(position = "jitter")
+
 ggplot(home, aes(x=Condition, y=Price)) + geom_point()
 ggplot(home, aes(x=Condition, y=Price)) + geom_point(position = "jitter")
+
+#Husk date med ogsaa
+#Kont plot normal
+
 grid.arrange(newk, neww, closeto, newb, numbert, numberbed, manyt, garage, reno, 
              ncol = 3)
-
 grid.arrange(newk, neww, closeto, newb, numbert, numberbed, manyt, garage, reno, lev, bal, large, high, quart, 
              ncol = 4)
-
-
-
-#Aendring af variabeltype
-home = home; home$Salgsdato = as.Date(home$Salgsdato, "%d-%m-%Y")
-#Evt factorize en masse variable saasom, ellers vent til efter snak med Matt, Our man! Diskuter hvilke?!
-for(col in c(3,"Storgrund")){
-  #home[c(col)] <- factor(home[,c(col)])
-  #If string
-  try(home[col] <- factor(home[col]), silent = TRUE)
-  #If numeric
-  try(home[as.numeric(col)] <- factor(home[as.numeric(col)]), silent = TRUE)
-}
-#Faktoriser Boligtilstand og skift til engelsk navne paa levels
-home$Boligtilstand <- factor(home$Boligtilstand, levels = c("Daarlig", "Middel", "God"))
-levels(home$Boligtilstand) <- c("Bad", "Medium", "Good")
-
-#Evt slaa kvartaler sammen til en raekke med faktor 1,2,3,4
-home$Kvartal1[home$Kvartal1 == 1] = 1
-home$Kvartal2[home$Kvartal2 == 1] = 2
-home$Kvartal3[home$Kvartal3 == 1] = 3
-home$Kvartal4[home$Kvartal4 == 1] = 4
-
-home <- home %>% mutate(Kvartal = factor(Kvartal1 + Kvartal2 + Kvartal3 + Kvartal4))
 
 
 #Bemaerk kun faa af typen 2 fam. Evt slet disse fra datasaet, og aendre 3 linjer laengere nede. And if so, maybe delete EjdType col afterwards
@@ -155,11 +144,6 @@ home <- home %>% filter(EjdType == "Villa, 1 fam." | EjdType == "Villa, 2 fam.")
   group_by(Postnr) %>%  
   arrange(Salgsdato)
 #Kunne have valgt at arrange by kontantpris, salgsaar, opfoerelsesaar?
-
-#Enten gem som R eller csv
-save(home, file="home.R")
-write.csv(home, file="home.csv")
-load("home.R")
 
 #Ide grupperinger af postnumre
 table(home$Postnr)
