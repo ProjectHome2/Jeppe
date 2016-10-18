@@ -34,7 +34,6 @@ ggplot(home, aes(x=log(Price))) + geom_histogram(binwidth=0.05)
 
 #Analysis - Number of NA? 
 ###########################################################################
-#
 
 newk = ggplot(home, aes(x=NewKitchen)) + geom_bar(stat = "count")
 
@@ -54,8 +53,7 @@ garage = ggplot(home, aes(x=Garage)) + geom_bar(stat = "count")
 
 reno = ggplot(home, aes(x=Renovation)) + geom_bar(stat = "count")
 
-#############
-
+basement = ggplot(home, aes(x=Basement)) + geom_bar(stat = "count")
 
 lev = ggplot(home, aes(x=as.factor(Levels))) + geom_bar(stat = "count") + labs(x = "Levels")
 
@@ -74,7 +72,8 @@ grid.arrange(newk, neww, closeto, newb, numbert, numberbed, manyt, garage, reno,
 grid.arrange(newk, neww, closeto, newb, numbert, numberbed, manyt, garage, reno, lev, bal, large, high, quart, 
              ncol = 4)
 
-
+grid.arrange(lev, newk, numbert, neww, newb, numberbed, bal, closeto, garage, manyt, basement, large, high, reno, quart, 
+             ncol = 4)
 
 
 
@@ -119,36 +118,39 @@ quart = ggplot(home, aes(x=Quarter, Price)) + geom_boxplot()
 postal = ggplot(home, aes(x=PostalCode, Price)) + geom_boxplot()
 quart = ggplot(home, aes(x=Quarter, Price)) + geom_boxplot()
 cond = ggplot(home, aes(x=Condition, Price)) + geom_boxplot()
-livingarea = ggplot(home, aes(x=as.factor(LivingArea), Price)) + geom_boxplot() + labs(x = "LivingArea")
+#livingarea = ggplot(home, aes(x=as.factor(LivingArea), Price)) + geom_boxplot() + labs(x = "LivingArea")
 ysale = ggplot(home, aes(as.factor(YearOfSale), Price)) + geom_boxplot() + labs(x = "YearOfSale")
-barea = ggplot(home, aes(as.factor(BasementArea), Price)) + geom_boxplot() + labs(x = "BasementArea")
-garea = ggplot(home, aes(as.factor(GroundArea), Price)) + geom_boxplot() + labs(x = "GroundArea")
-conyear = ggplot(home, aes(as.factor(ConstructionYear), Price)) + geom_boxplot() + labs(x = "ConstructionYear")
-salesp = ggplot(home, aes(as.factor(SalesPeriod), Price)) + geom_boxplot() + labs(x = "SalesPeriod")
+#barea = ggplot(home, aes(as.factor(BasementArea), Price)) + geom_boxplot() + labs(x = "BasementArea")
+#garea = ggplot(home, aes(as.factor(GroundArea), Price)) + geom_boxplot() + labs(x = "GroundArea")
+#conyear = ggplot(home, aes(as.factor(ConstructionYear), Price)) + geom_boxplot() + labs(x = "ConstructionYear")
+#salesp = ggplot(home, aes(as.factor(SalesPeriod), Price)) + geom_boxplot() + labs(x = "SalesPeriod")
 age = ggplot(home, aes(as.factor(Age), Price)) + geom_boxplot() + labs(x = "Age")
 
-
-#Check om mangler variable
-
+#"Levels", "NewBathooms", "Garage", "HighHouse", "NewKitchen", "NumberOfBedrooms", "ManyToilets", 
+#"NumberOfToilets", "Basement", "NewWindows", "CloseToWater", "LargeGround".
 
 #Evt plot "kont" variable normal:
-ggplot(home, aes(x=LivingArea, y=Price)) + geom_point()
-ggplot(home, aes(x=BasementArea, y=Price)) + geom_point()
-ggplot(home, aes(x=GroundArea, y=Price)) + geom_point()
-ggplot(home, aes(x=ConstructionYear, y=Price)) + geom_point()
-ggplot(home, aes(x=SalesPeriod, y=Price)) + geom_point()
-ggplot(home, aes(x=YearOfSale, y=Price)) + geom_point()
-ggplot(home, aes(x=Age, y=Price)) + geom_point()
+livingarea = ggplot(home, aes(x=LivingArea, y=Price)) + geom_point()
+barea = ggplot(home, aes(x=BasementArea, y=Price)) + geom_point()
+garea = ggplot(home, aes(x=GroundArea, y=Price)) + geom_point()
+conyear = ggplot(home, aes(x=ConstructionYear, y=Price)) + geom_point()
+salesp = ggplot(home, aes(x=SalesPeriod, y=Price)) + geom_point()
+#ggplot(home, aes(x=YearOfSale, y=Price)) + geom_point()
+age = ggplot(home, aes(x=Age, y=Price)) + geom_point()
 
 
 #Bare et forsoeg
-ggplot(home, aes(x=Condition, y=Price)) + geom_point(position = "jitter")
+ggplot(home, aes(x=YearOfSale, y=Price)) + geom_point(position = "jitter")
 
 #Tie the plots together
+grid.arrange(postal, cond, livingarea, barea, garea, conyear, lev, bal, salesp, ysale, reno, quart, age,  
+             ncol = 4)
+
 grid.arrange(newk, neww, closeto, newb, numbert, numberbed, manyt, garage, reno, 
              ncol = 3)
 grid.arrange(newk, neww, closeto, newb, numbert, numberbed, manyt, garage, reno, lev, bal, large, high, quart, 
              ncol = 4)
+
 
 
 #Til sidst checke which factors could be used to divide into submodels - which factors indicate multi-model?
@@ -190,7 +192,7 @@ table(home$Postnr)
 hist(home$Kontantpris)
 
 #Tjek hvor mange missing values vi har,- God til at tjekke hvorvidt vi kan bruge variabel eller ej, og hvordan NA fortolkes
-table(home$NytKokken, useNA = "always")
+table(home$BasementArea, useNA = "always")
 
 
 #Opbygning af dplyr m. pipe
