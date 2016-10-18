@@ -80,9 +80,9 @@ grid.arrange(newk, neww, closeto, newb, numbert, numberbed, manyt, garage, reno,
 
 
 #Analysis of prices ~ variables
+#Check whether better if log-prices or log of variable in order to see linear dependence. 
 ###########################################################################
 #Boxplotting
-ggplot(home, aes(as.factor(YearOfSale), Price)) + geom_boxplot()
 
 newk = ggplot(home, aes(x=NewKitchen, Price)) + geom_boxplot()
 
@@ -119,23 +119,63 @@ quart = ggplot(home, aes(x=Quarter, Price)) + geom_boxplot()
 postal = ggplot(home, aes(x=PostalCode, Price)) + geom_boxplot()
 quart = ggplot(home, aes(x=Quarter, Price)) + geom_boxplot()
 cond = ggplot(home, aes(x=Condition, Price)) + geom_boxplot()
-livingarea = ggplot(home, aes(x=as.factor(LivingArea), Price)) + geom_boxplot()
-#Fortsaet saa faar graf med fordelingen af variable ift. pris for alle variable. 
+livingarea = ggplot(home, aes(x=as.factor(LivingArea), Price)) + geom_boxplot() + labs(x = "LivingArea")
+ysale = ggplot(home, aes(as.factor(YearOfSale), Price)) + geom_boxplot() + labs(x = "YearOfSale")
+barea = ggplot(home, aes(as.factor(BasementArea), Price)) + geom_boxplot() + labs(x = "BasementArea")
+garea = ggplot(home, aes(as.factor(GroundArea), Price)) + geom_boxplot() + labs(x = "GroundArea")
+conyear = ggplot(home, aes(as.factor(ConstructionYear), Price)) + geom_boxplot() + labs(x = "ConstructionYear")
+salesp = ggplot(home, aes(as.factor(SalesPeriod), Price)) + geom_boxplot() + labs(x = "SalesPeriod")
+age = ggplot(home, aes(as.factor(Age), Price)) + geom_boxplot() + labs(x = "Age")
 
-ggplot(home, aes(x=Price, fill = as.factor(SalesPeriod)))  + geom_histogram(bins = 100) + geom_vline(xintercept = mean(home$Price))
-ggplot(home, aes(x=SalesPeriod, y=Price)) + geom_point(position = "jitter")
 
-ggplot(home, aes(x=Condition, y=Price)) + geom_point()
+#Check om mangler variable
+
+
+#Evt plot "kont" variable normal:
+ggplot(home, aes(x=LivingArea, y=Price)) + geom_point()
+ggplot(home, aes(x=BasementArea, y=Price)) + geom_point()
+ggplot(home, aes(x=GroundArea, y=Price)) + geom_point()
+ggplot(home, aes(x=ConstructionYear, y=Price)) + geom_point()
+ggplot(home, aes(x=SalesPeriod, y=Price)) + geom_point()
+ggplot(home, aes(x=YearOfSale, y=Price)) + geom_point()
+ggplot(home, aes(x=Age, y=Price)) + geom_point()
+
+
+#Bare et forsoeg
 ggplot(home, aes(x=Condition, y=Price)) + geom_point(position = "jitter")
 
-#Husk date med ogsaa
-#Kont plot normal
-
+#Tie the plots together
 grid.arrange(newk, neww, closeto, newb, numbert, numberbed, manyt, garage, reno, 
              ncol = 3)
 grid.arrange(newk, neww, closeto, newb, numbert, numberbed, manyt, garage, reno, lev, bal, large, high, quart, 
              ncol = 4)
 
+
+#Til sidst checke which factors could be used to divide into submodels - which factors indicate multi-model?
+#i.e. use plots like
+ggplot(home, aes(x=SalesPeriod, y=Price, colour = Condition)) + geom_point()
+ggplot(home, aes(x=SalesPeriod, y=Price)) + geom_point() + facet_wrap(~Condition)
+ggplot(home, aes(x=SalesPeriod, y=Price, colour = Condition)) + geom_point() + facet_wrap(~PostalCode)
+
+#Check for covariance between independent variables 
+## put (absolute) correlations on the upper panels,
+## with size proportional to the correlations.
+
+panel.cor <- function(x, y, digits = 2, prefix = "", cex.cor, ...)
+{
+  usr <- par("usr"); on.exit(par(usr))
+  par(usr = c(0, 1, 0, 1))
+  r <- abs(cor(x, y))
+  txt <- format(c(r, 0.123456789), digits = digits)[1]
+  txt <- paste0(prefix, txt)
+  if(missing(cex.cor)) cex.cor <- 0.8/strwidth(txt)
+  text(0.5, 0.5, txt, cex = cex.cor * r)
+}
+
+attach(home)
+pairs(SalesPeriod, Price)
+panel.cor(c(SalesPeriod, Price), c(SalesPeriod, Price))
+detach()
 
 #Bemaerk kun faa af typen 2 fam. Evt slet disse fra datasaet, og aendre 3 linjer laengere nede. And if so, maybe delete EjdType col afterwards
 table(home$EjdType)
@@ -205,7 +245,7 @@ ggplot(home, aes(x=as.factor(Postnr), y=as.integer(Liggetid), colour = Boligtils
 
 #Smart med wrap
 ggplot(home, aes(x=as.integer(Liggetid), y=Kontantpris, colour = Boligtilstand)) + geom_point()
-ggplot(home, aes(x=as.integer(Liggetid), y=Kontantpris, colour = Boligtilstand)) + geom_point() + facet_wrap(~Postnr)
+ggplot(home, aes(x=SalesPeriod, y=Price, colour = Condition)) + geom_point() + facet_wrap(~PostalCode)
 
 #Boxplot
 ggplot(home, aes(Boligtilstand, Kontantpris)) + geom_boxplot() 
