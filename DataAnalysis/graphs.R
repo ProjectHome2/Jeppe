@@ -124,7 +124,7 @@ ysale = ggplot(home, aes(as.factor(YearOfSale), Price)) + geom_boxplot() + labs(
 #garea = ggplot(home, aes(as.factor(GroundArea), Price)) + geom_boxplot() + labs(x = "GroundArea")
 #conyear = ggplot(home, aes(as.factor(ConstructionYear), Price)) + geom_boxplot() + labs(x = "ConstructionYear")
 #salesp = ggplot(home, aes(as.factor(SalesPeriod), Price)) + geom_boxplot() + labs(x = "SalesPeriod")
-age = ggplot(home, aes(as.factor(Age), Price)) + geom_boxplot() + labs(x = "Age")
+#age = ggplot(home, aes(as.factor(Age), Price)) + geom_boxplot() + labs(x = "Age")
 
 #"Levels", "NewBathooms", "Garage", "HighHouse", "NewKitchen", "NumberOfBedrooms", "ManyToilets", 
 #"NumberOfToilets", "Basement", "NewWindows", "CloseToWater", "LargeGround".
@@ -136,8 +136,12 @@ garea = ggplot(home, aes(x=GroundArea, y=Price)) + geom_point()
 conyear = ggplot(home, aes(x=ConstructionYear, y=Price)) + geom_point()
 salesp = ggplot(home, aes(x=SalesPeriod, y=Price)) + geom_point()
 #ggplot(home, aes(x=YearOfSale, y=Price)) + geom_point()
-age = ggplot(home, aes(x=Age, y=Price)) + geom_point()
-
+age = ggplot(home, aes(x=Age, y=Price)) + geom_point(alpha = 0.1, color = "midnightblue", size = 2)
+age = ggplot(home, aes(x=Age, y=Price)) + geom_bin2d()
+age = ggplot(home, aes(x=Age, y=Price)) + stat_binhex(size = 0.2)
+  
+  stat_bin(aes(size = ..density.., color= ..density..), 
+         binwidth = 0.1,geom = "point", position="jitter") 
 
 #Bare et forsoeg
 ggplot(home, aes(x=YearOfSale, y=Price)) + geom_point(position = "jitter")
@@ -151,13 +155,13 @@ grid.arrange(newk, neww, closeto, newb, numbert, numberbed, manyt, garage, reno,
 grid.arrange(newk, neww, closeto, newb, numbert, numberbed, manyt, garage, reno, lev, bal, large, high, quart, 
              ncol = 4)
 
-
+smoothScatter(home[,c(25,5)])
 
 #Til sidst checke which factors could be used to divide into submodels - which factors indicate multi-model?
 #i.e. use plots like
-ggplot(home, aes(x=SalesPeriod, y=Price, colour = Condition)) + geom_point()
-ggplot(home, aes(x=SalesPeriod, y=Price)) + geom_point() + facet_wrap(~Condition)
-ggplot(home, aes(x=SalesPeriod, y=Price, colour = Condition)) + geom_point() + facet_wrap(~PostalCode)
+ggplot(home, aes(x=YearOfSale, y=Price, colour = Quarter)) + geom_point(position = "jitter")
+ggplot(home, aes(x=YearOfSale, y=Price)) + geom_point(position = "jitter") + facet_wrap(~Quarter) + theme_dark()
+ggplot(home, aes(x=SalesPeriod, y=Price, colour = Condition)) + geom_point(position = "jitter") + facet_wrap(~PostalCode)
 
 #Check for covariance between independent variables 
 ## put (absolute) correlations on the upper panels,
@@ -228,6 +232,13 @@ detach()
 #Graphs
 #Evt proev at goere grafer like a beauty queen med xmax ymax osv 
 #Ande theme: Proev + theme_dark()
+
+#Til sidst checke which factors could be used to divide into submodels - which factors indicate multi-model?
+#i.e. use plots like
+ggplot(home, aes(x=YearOfSale, y=Price, colour = Quarter)) + geom_point(position = "jitter")
+ggplot(home, aes(x=YearOfSale, y=Price)) + geom_point(position = "jitter") + facet_wrap(~Quarter) + theme_dark()
+ggplot(home, aes(x=SalesPeriod, y=Price, colour = Condition)) + geom_point(position = "jitter") + facet_wrap(~PostalCode)
+
 library(ggplot2)
 qplot(Boligareal, Kontantpris, data=home)
 
