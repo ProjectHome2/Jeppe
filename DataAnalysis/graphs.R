@@ -115,7 +115,7 @@ quart = ggplot(home, aes(x=Quarter, Price)) + geom_boxplot()
 
 
 # Get the rest
-postal = ggplot(home, aes(x=PostalCode, Price)) + geom_boxplot()
+postal = ggplot(home, aes(x=PostalCode, Price)) + geom_point(alpha = 0.2, position = "jitter")
 quart = ggplot(home, aes(x=Quarter, Price)) + geom_boxplot()
 cond = ggplot(home, aes(x=Condition, Price)) + geom_boxplot()
 #livingarea = ggplot(home, aes(x=as.factor(LivingArea), Price)) + geom_boxplot() + labs(x = "LivingArea")
@@ -281,3 +281,12 @@ pairs(home[,c(1,2,5)])
 
 fit1=lm(Price~SalesPeriod,data=home)
 summary(fit1)
+
+A = home[, c(6, 7, 9, 20, 21, 25)]
+row.has.na <- apply(A, 1, function(x){any(is.na(x))})
+home_without_na = A[-row.has.na,]
+log10(kappa(home_without_na))
+f = 1/rcond(as.matrix(home_without_na))
+
+b = as.matrix(home_without_na)
+

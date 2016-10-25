@@ -56,3 +56,47 @@ for(i in 1:length(home)){
 save(home, file="homeFull.Rdata")
 write.csv(home, file="homeFull.csv")
 
+
+#NytCleanData - Ingen NA
+sum(is.na(home$Age))
+
+sum(is.na(home$Balcony))
+
+sum(is.na(home$NumberOfBedrooms))
+na_index = is.na(home$NumberOfBedrooms)
+#Vector without NA's
+nbedroom = home$NumberOfBedrooms[!na_index]
+count = as.matrix(table(nbedroom))
+#SSH for udfald
+p = count/(4482 - sum(na_index))
+p_dist = cumsum(p) 
+simulate_nbedroom = function(dist){
+  random = runif(1)
+  if(random <= p_dist[1]) return(1)
+  for(i in 2:7){
+    if(p_dist[i-1] < random & random <= p_dist[i]) return(i)
+  }
+}
+
+
+
+homeFull_0na <- home %>% mutate(NumberOfBedrooms = ifelse(is.na(NumberOfBedrooms), simulate_nbedroom(p_dist), NumberOfBedrooms))
+
+counts = table(home$NumberOfBedrooms, useNA = "always")
+as.matrix(counts)
+j = home$NumberOfBedrooms == 1
+homeFull_0na <- 
+
+df.qty <- data.raw %>%
+  filter(PURPOSE_CD == "OFF") %>%
+  group_by(UNIT_REFERENCE_NO) %>%
+  summarise(
+    ZONE_CD = first(ZONE_CD),
+    TOTAL_ACC_QTY = sum(AWARDED_QUANTITY_NO),
+    AVG_DAILY_ACC_QTY = TOTAL_ACC_QTY / length(unique(BID_OFFER_DATE_DT)),
+    AVG_HOURLY_ACC_QTY = AVG_DAILY_ACC_QTY / 24
+  ) %>%
+  arrange(desc(TOTAL_ACC_QTY)) %>%
+  head(n = 10)
+
+
